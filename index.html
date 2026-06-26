@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Biblioteca Leitor Integral</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+
+:root{
+    --primary:#1a365d;
+    --secondary:#2c5282;
+    --accent:#ed8936;
+    --light:#f8fafc;
+    --dark:#1a202c;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:var(--light);
+    color:var(--dark);
+}
+
+header{
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    color:white;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 2px 10px rgba(0,0,0,.2);
+}
+
+header h1{
+    font-size:2rem;
+}
+
+.hero{
+    padding:40px 20px;
+    text-align:center;
+}
+
+.hero h2{
+    margin-bottom:10px;
+}
+
+.search-box{
+    max-width:600px;
+    margin:20px auto;
+}
+
+.search-box input{
+    width:100%;
+    padding:15px;
+    border:2px solid #ddd;
+    border-radius:10px;
+    font-size:16px;
+}
+
+.categories{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:30px;
+}
+
+.categories button{
+    border:none;
+    background:var(--primary);
+    color:white;
+    padding:12px 18px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.categories button:hover{
+    background:var(--accent);
+}
+
+.catalogo{
+    max-width:1400px;
+    margin:auto;
+    padding:20px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:20px;
+}
+
+.book-card{
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 4px 15px rgba(0,0,0,.1);
+    transition:.3s;
+}
+
+.book-card:hover{
+    transform:translateY(-5px);
+}
+
+.book-cover{
+    height:320px;
+}
+
+.book-cover img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.book-info{
+    padding:15px;
+}
+
+.book-info h3{
+    margin-bottom:8px;
+}
+
+.book-info p{
+    color:#666;
+    font-size:14px;
+    margin-bottom:15px;
+}
+
+.book-info button{
+    width:100%;
+    border:none;
+    background:var(--accent);
+    color:white;
+    padding:12px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.reader-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:black;
+    z-index:9999;
+}
+
+.reader-modal.active{
+    display:flex;
+    flex-direction:column;
+}
+
+.reader-header{
+    background:var(--primary);
+    color:white;
+    padding:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.reader-header button{
+    border:none;
+    background:var(--accent);
+    color:white;
+    padding:10px 15px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+#pdf-viewer{
+    flex:1;
+    border:none;
+    background:white;
+}
+
+footer{
+    margin-top:40px;
+    background:var(--dark);
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>
+        <i class="fas fa-book-open"></i>
+        Biblioteca Leitor Integral
+    </h1>
+</header>
+
+<section class="hero">
+
+    <h2>Leia livros online gratuitamente</h2>
+
+    <p>
+        Explore nosso acervo digital.
+    </p>
+
+    <div class="search-box">
+        <input
+            type="text"
+            id="search-input"
+            placeholder="Buscar livro ou autor..."
+            onkeyup="searchBooks()">
+    </div>
+
+</section>
+
+<section class="categories">
+
+    <button onclick="filtrar('todos')">
+        Todos
+    </button>
+
+    <button onclick="filtrar('aluisio')">
+        Aluísio Azevedo
+    </button>
+
+    <button onclick="filtrar('didaticos')">
+        Didáticos
+    </button>
+
+    <button onclick="filtrar('uema')">
+        UEMA
+    </button>
+
+    <button onclick="filtrar('hqs')">
+        HQs
+    </button>
+
+    <button onclick="filtrar('maranhenses')">
+        Maranhenses
+    </button>
+
+</section>
+
+<section class="catalogo" id="catalogo"></section>
+
+<div class="reader-modal" id="reader-modal">
+
+    <div class="reader-header">
+
+        <h3 id="reader-title">
+            Livro
+        </h3>
+
+        <button onclick="closeReader()">
+            Fechar
+        </button>
+
+    </div>
+
+    <iframe id="pdf-viewer"></iframe>
+
+</div>
+
+<footer>
+
+    Biblioteca Leitor Integral © 2026
+
+</footer>
+
+<script>
+
+/*
+=========================================
+ADICIONE SEUS LIVROS AQUI
+=========================================
+*/
+
+const livros = [
+
+{
+    titulo:"O Cortiço",
+    autor:"Aluísio Azevedo",
+    categoria:"aluisio",
+    capa:"capas/o-cortico.png",
+    pdf:"pdfs/o-cortico.pdf"
+},
+
+{
+    titulo:"O Mulato",
+    autor:"Aluísio Azevedo",
+    categoria:"aluisio",
+    capa:"capas/o-mulato.png",
+    pdf:"pdfs/o-mulato.pdf"
+},
+
+{
+    titulo:"O Pequeno Principe",
+    autor:"A toi e de ai t-Exupéry",
+    categoria:"didaticos",
+    capa:"capas/o-pequeno-principe.png",
+    pdf:"pdfs/o-pequeno-principe.pdf"
+},
+
+{
+    titulo:"Batman - O Cavaleiro das Trevas 01",
+    autor:"Frank Miller",
+    categoria:"hqs",
+    capa:"capas/batman-o-cavaleiro-das-trevas-01.png",
+    pdf:"pdfs/Batman-O-Cavaleiro-das-Trevas-01.pdf"
+},
+
+{
+    titulo:"Batman - O Cavaleiro das Trevas 02",
+    autor:"Frank Miller",
+    categoria:"hqs",
+    capa:"capas/batman-o-cavaleiro-das-trevas-02.png",
+    pdf:"pdfs/Batman-O-Cavaleiro-das-Trevas-02.pdf"
+},
+
+{
+    titulo:"Casa de Pensão",
+    autor:"Aluísio Azevedo",
+    categoria:"aluisio",
+    capa:"capas/casa-de-pensao.png",
+    pdf:"pdfs/casa-de-pensao.pdf"
+}
+
+];
+
+/*
+=========================================
+SISTEMA
+=========================================
+*/
+
+let livrosFiltrados = livros;
+
+function renderizarLivros(lista){
+
+    const catalogo =
+        document.getElementById("catalogo");
+
+    catalogo.innerHTML = "";
+
+    lista.forEach(livro=>{
+
+        catalogo.innerHTML += `
+
+        <div class="book-card">
+
+            <div class="book-cover">
+
+                <img src="${livro.capa}">
+
+            </div>
+
+            <div class="book-info">
+
+                <h3>${livro.titulo}</h3>
+
+                <p>${livro.autor}</p>
+
+                <button
+                    onclick="openBook('${livro.pdf}','${livro.titulo}')">
+
+                    Ler Livro
+
+                </button>
+
+            </div>
+
+        </div>
+
+        `;
+    });
+}
+
+function openBook(pdf,titulo){
+
+    document
+        .getElementById("reader-title")
+        .textContent = titulo;
+
+    document
+        .getElementById("pdf-viewer")
+        .src = pdf;
+
+    document
+        .getElementById("reader-modal")
+        .classList.add("active");
+}
+
+function closeReader(){
+
+    document
+        .getElementById("reader-modal")
+        .classList.remove("active");
+
+    document
+        .getElementById("pdf-viewer")
+        .src = "";
+}
+
+function searchBooks(){
+
+    const termo =
+        document
+        .getElementById("search-input")
+        .value
+        .toLowerCase();
+
+    const resultado =
+        livrosFiltrados.filter(livro =>
+
+            livro.titulo
+                .toLowerCase()
+                .includes(termo)
+
+            ||
+
+            livro.autor
+                .toLowerCase()
+                .includes(termo)
+        );
+
+    renderizarLivros(resultado);
+}
+
+function filtrar(categoria){
+
+    if(categoria === "todos"){
+
+        livrosFiltrados = livros;
+
+    }else{
+
+        livrosFiltrados =
+            livros.filter(
+                livro => livro.categoria === categoria
+            );
+    }
+
+    renderizarLivros(livrosFiltrados);
+}
+
+renderizarLivros(livros);
+
+</script>
+
+</body>
+</html>
