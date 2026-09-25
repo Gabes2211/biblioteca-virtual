@@ -5,184 +5,1544 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Biblioteca Leitor Integral</title>
+<meta name="description" content="Biblioteca digital gratuita: clássicos da literatura, livros didáticos, HQs e muito mais para ler online, direto no navegador.">
+<meta name="theme-color" content="#1c3a2e">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Biblioteca Leitor Integral">
+<meta property="og:description" content="Clássicos, didáticos, HQs e muito mais para ler de graça, direto no navegador.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c3a2e'/%3E%3Cpath d='M12 18l18 3v26l-18-3zM52 18l-18 3v26l18-3z' fill='%23d8b26a'/%3E%3C/svg%3E">
 
+<script>
+/* aplica o tema (claro/escuro) escolhido antes de desenhar a página */
+try{var t=JSON.parse(localStorage.getItem("blc:tema"));if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t);}catch(e){}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
 
+/*
+=========================================
+CORES E FONTES
+=========================================
+*/
+
 :root{
-    --primary:#1a365d;
-    --secondary:#2c5282;
-    --accent:#ed8936;
-    --light:#f8fafc;
-    --dark:#1a202c;
+    --bg:#f6f1e7;
+    --bg-2:#ede4d3;
+    --surface:#fffdf8;
+    --ink:#1e1a15;
+    --ink-2:#4b443b;
+    --muted:#72675b;
+    --line:#e4d9c6;
+    --brand:#1c3a2e;
+    --brand-2:#2a5443;
+    --brass:#8a6224;
+    --brass-2:#d8b26a;
+    --accent:#1c3a2e;
+    --accent-ink:#fffdf8;
+    --heart:#d1495b;
+    --book-shadow:0 1px 1px rgba(40,28,10,.08),0 6px 12px -2px rgba(40,28,10,.16),0 18px 30px -12px rgba(40,28,10,.35);
+    --book-shadow-hover:0 2px 2px rgba(40,28,10,.08),0 16px 26px -6px rgba(40,28,10,.26),0 34px 50px -18px rgba(40,28,10,.45);
+    --serif:"Fraunces",Georgia,"Times New Roman",serif;
+    --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    color-scheme:light;
 }
 
-*{
+@media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+        --bg:#12110e;
+        --bg-2:#201d18;
+        --surface:#1b1915;
+        --ink:#f1eadc;
+        --ink-2:#d3c9b7;
+        --muted:#a39681;
+        --line:#2f2a23;
+        --brand:#0e2019;
+        --brand-2:#1a3a2c;
+        --brass:#d6ab62;
+        --brass-2:#e2c07e;
+        --accent:#d8b26a;
+        --accent-ink:#1a1712;
+        --heart:#f07182;
+        --book-shadow:0 1px 1px rgba(0,0,0,.3),0 8px 16px -4px rgba(0,0,0,.5),0 22px 36px -14px rgba(0,0,0,.75);
+        --book-shadow-hover:0 2px 2px rgba(0,0,0,.3),0 18px 28px -6px rgba(0,0,0,.55),0 36px 54px -18px rgba(0,0,0,.8);
+        color-scheme:dark;
+    }
+}
+
+:root[data-theme="dark"]{
+    --bg:#12110e;
+    --bg-2:#201d18;
+    --surface:#1b1915;
+    --ink:#f1eadc;
+    --ink-2:#d3c9b7;
+    --muted:#a39681;
+    --line:#2f2a23;
+    --brand:#0e2019;
+    --brand-2:#1a3a2c;
+    --brass:#d6ab62;
+    --brass-2:#e2c07e;
+    --accent:#d8b26a;
+    --accent-ink:#1a1712;
+    --heart:#f07182;
+    --book-shadow:0 1px 1px rgba(0,0,0,.3),0 8px 16px -4px rgba(0,0,0,.5),0 22px 36px -14px rgba(0,0,0,.75);
+    --book-shadow-hover:0 2px 2px rgba(0,0,0,.3),0 18px 28px -6px rgba(0,0,0,.55),0 36px 54px -18px rgba(0,0,0,.8);
+    color-scheme:dark;
+}
+
+/*
+=========================================
+BASE
+=========================================
+*/
+
+*,*::before,*::after{
+    box-sizing:border-box;
     margin:0;
     padding:0;
-    box-sizing:border-box;
+}
+
+[hidden]{
+    display:none !important;
+}
+
+html{
+    scroll-behavior:smooth;
+    -webkit-text-size-adjust:100%;
 }
 
 body{
-    font-family:Arial, Helvetica, sans-serif;
-    background:var(--light);
-    color:var(--dark);
+    font-family:var(--sans);
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.5;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
 }
 
-header{
-    background:linear-gradient(135deg,var(--primary),var(--secondary));
-    color:white;
-    padding:20px;
-    text-align:center;
-    box-shadow:0 2px 10px rgba(0,0,0,.2);
+body.lendo{
+    overflow:hidden;
 }
 
-header h1{
-    font-size:2rem;
+img{
+    display:block;
+    max-width:100%;
 }
+
+button,input,select{
+    font:inherit;
+    color:inherit;
+}
+
+button{
+    background:none;
+    border:0;
+    cursor:pointer;
+}
+
+a{
+    color:inherit;
+}
+
+:focus-visible{
+    outline:2px solid var(--brass-2);
+    outline-offset:3px;
+}
+
+.container{
+    width:min(1240px, 100% - 32px);
+    margin-inline:auto;
+}
+
+.sr-only{
+    position:absolute;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+    white-space:nowrap;
+}
+
+.skip{
+    position:absolute;
+    left:16px;
+    top:-60px;
+    z-index:300;
+    padding:10px 16px;
+    border-radius:10px;
+    background:var(--surface);
+    color:var(--ink);
+    font-weight:600;
+    text-decoration:none;
+    transition:top .2s;
+}
+
+.skip:focus{
+    top:16px;
+}
+
+/*
+=========================================
+TOPO
+=========================================
+*/
 
 .hero{
-    padding:40px 20px;
+    position:relative;
+    overflow:hidden;
+    color:#f4ecdc;
+    background:
+        radial-gradient(900px 520px at 8% -12%, rgba(216,178,106,.26), transparent 60%),
+        radial-gradient(700px 480px at 105% 115%, rgba(216,178,106,.14), transparent 60%),
+        linear-gradient(160deg, var(--brand-2), var(--brand) 62%);
+}
+
+/* lombadas de livros bem sutis no fundo */
+.hero::before{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:150px;
+    opacity:.07;
+    pointer-events:none;
+    background:repeating-linear-gradient(90deg,
+        #fff 0 9px, transparent 9px 13px,
+        #fff 13px 21px, transparent 21px 24px,
+        #fff 24px 30px, transparent 30px 37px,
+        #fff 37px 49px, transparent 49px 53px);
+    -webkit-mask-image:linear-gradient(to top, #000, transparent);
+            mask-image:linear-gradient(to top, #000, transparent);
+}
+
+.hero::after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:3px;
+    background:linear-gradient(90deg, transparent, var(--brass-2), transparent);
+    opacity:.75;
+}
+
+.topbar{
+    position:relative;
+    z-index:2;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:22px 0;
+}
+
+.brand{
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    color:#f4ecdc;
+    text-decoration:none;
+}
+
+.brand-mark{
+    flex:none;
+    width:44px;
+    height:44px;
+    border-radius:13px;
+    display:grid;
+    place-items:center;
+    font-size:18px;
+    color:var(--brass-2);
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(216,178,106,.45);
+}
+
+.brand-name{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:1.22rem;
+    line-height:1.1;
+    letter-spacing:.01em;
+}
+
+.brand-name small{
+    display:block;
+    margin-top:4px;
+    font-family:var(--sans);
+    font-size:.66rem;
+    font-weight:600;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:rgba(244,236,220,.6);
+}
+
+.top-actions{
+    display:flex;
+    gap:8px;
+}
+
+.top-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    height:42px;
+    min-width:42px;
+    padding:0 16px;
+    border-radius:999px;
+    font-size:.9rem;
+    font-weight:500;
+    color:#f4ecdc;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.14);
+    transition:background .2s;
+}
+
+.top-btn:hover{
+    background:rgba(255,255,255,.15);
+}
+
+.top-btn.icon{
+    padding:0;
+}
+
+.top-btn .count{
+    min-width:20px;
+    padding:1px 6px;
+    border-radius:999px;
+    font-size:.72rem;
+    font-weight:700;
     text-align:center;
+    color:#1a1712;
+    background:var(--brass-2);
 }
 
-.hero h2{
-    margin-bottom:10px;
+.hero-grid{
+    position:relative;
+    z-index:1;
+    display:grid;
+    grid-template-columns:1.1fr .9fr;
+    gap:40px;
+    align-items:center;
+    padding:28px 0 76px;
 }
 
-.search-box{
-    max-width:600px;
-    margin:20px auto;
+.eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-size:.74rem;
+    font-weight:600;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--brass-2);
 }
 
-.search-box input{
-    width:100%;
-    padding:15px;
-    border:2px solid #ddd;
-    border-radius:10px;
-    font-size:16px;
+.eyebrow::before{
+    content:"";
+    width:30px;
+    height:1px;
+    background:currentColor;
 }
 
-.categories{
+.hero h1{
+    margin:18px 0;
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:clamp(2.2rem, 4.8vw, 3.8rem);
+    line-height:1.04;
+    letter-spacing:-.015em;
+    color:#fbf6ec;
+}
+
+.hero h1 em{
+    font-weight:500;
+    font-style:italic;
+    color:var(--brass-2);
+}
+
+.hero-lead{
+    max-width:33em;
+    font-size:clamp(1rem, 1.35vw, 1.14rem);
+    color:rgba(244,236,220,.8);
+}
+
+.hero-cta{
     display:flex;
     flex-wrap:wrap;
+    gap:12px;
+    margin-top:30px;
+}
+
+.btn{
+    display:inline-flex;
+    align-items:center;
     justify-content:center;
     gap:10px;
-    margin-bottom:30px;
+    height:50px;
+    padding:0 24px;
+    border-radius:999px;
+    font-size:.96rem;
+    font-weight:600;
+    text-decoration:none;
+    transition:transform .2s, background .2s, box-shadow .2s;
 }
 
-.categories button{
-    border:none;
-    background:var(--primary);
-    color:white;
-    padding:12px 18px;
-    border-radius:8px;
-    cursor:pointer;
+.btn-brass{
+    color:#1a1712;
+    background:var(--brass-2);
+    box-shadow:0 10px 26px -10px rgba(216,178,106,.7);
 }
 
-.categories button:hover{
-    background:var(--accent);
+.btn-brass:hover{
+    transform:translateY(-2px);
+    background:#e6c686;
 }
 
-.catalogo{
-    max-width:1400px;
-    margin:auto;
-    padding:20px;
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-    gap:20px;
+.btn-ghost{
+    color:#f4ecdc;
+    border:1px solid rgba(244,236,220,.3);
 }
 
-.book-card{
-    background:white;
-    border-radius:12px;
+.btn-ghost:hover{
+    background:rgba(255,255,255,.08);
+}
+
+.stats{
+    display:flex;
+    flex-wrap:wrap;
+    gap:34px;
+    margin-top:38px;
+    padding-top:24px;
+    border-top:1px solid rgba(244,236,220,.14);
+}
+
+.stat strong{
+    display:block;
+    font-family:var(--serif);
+    font-size:2rem;
+    font-weight:600;
+    line-height:1;
+    color:#fff;
+}
+
+.stat span{
+    display:block;
+    margin-top:6px;
+    font-size:.8rem;
+    letter-spacing:.03em;
+    color:rgba(244,236,220,.62);
+}
+
+/* vitrine com 3 livros na estante */
+.hero-art{
+    position:relative;
+    height:440px;
+}
+
+.hero-art::before{
+    content:"";
+    position:absolute;
+    left:10%;
+    right:10%;
+    top:6%;
+    bottom:16%;
+    pointer-events:none;
+    background:radial-gradient(closest-side, rgba(226,192,126,.3), transparent);
+}
+
+.stack{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:46px;
+    height:360px;
+}
+
+.book{
+    position:absolute;
+    left:50%;
+    bottom:0;
+    width:196px;
+    aspect-ratio:7/10;
     overflow:hidden;
-    box-shadow:0 4px 15px rgba(0,0,0,.1);
-    transition:.3s;
+    border-radius:3px 7px 7px 3px;
+    background:#2a2620;
+    box-shadow:0 26px 50px -18px rgba(0,0,0,.7), 0 10px 20px -10px rgba(0,0,0,.5);
+    transform-origin:50% 100%;
+    transition:transform .6s cubic-bezier(.2,.8,.2,1);
+    container-type:inline-size;
 }
 
-.book-card:hover{
-    transform:translateY(-5px);
+.book:nth-child(1){
+    transform:translateX(calc(-50% - 124px)) rotate(-9deg);
 }
 
-.book-cover{
-    height:320px;
+.book:nth-child(2){
+    transform:translateX(calc(-50% + 124px)) rotate(9deg);
 }
 
-.book-cover img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
+.book:nth-child(3){
+    z-index:2;
+    width:222px;
+    transform:translateX(-50%);
 }
 
-.book-info{
-    padding:15px;
+.hero-art:hover .book:nth-child(1){
+    transform:translateX(calc(-50% - 152px)) rotate(-12deg);
 }
 
-.book-info h3{
-    margin-bottom:8px;
+.hero-art:hover .book:nth-child(2){
+    transform:translateX(calc(-50% + 152px)) rotate(12deg);
 }
 
-.book-info p{
-    color:#666;
-    font-size:14px;
-    margin-bottom:15px;
+.hero-art:hover .book:nth-child(3){
+    transform:translateX(-50%) translateY(-10px);
 }
 
-.book-info button{
-    width:100%;
-    border:none;
-    background:var(--accent);
-    color:white;
-    padding:12px;
-    border-radius:8px;
-    cursor:pointer;
+.shelf{
+    position:absolute;
+    left:6%;
+    right:6%;
+    bottom:30px;
+    height:16px;
+    border-radius:3px;
+    background:linear-gradient(180deg, #8b6a3e, #5a4326 60%, #46341e);
+    box-shadow:0 22px 34px -10px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.2);
 }
 
-.reader-modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:black;
-    z-index:9999;
+/*
+=========================================
+BUSCA E CATEGORIAS
+=========================================
+*/
+
+.sentinela{
+    height:1px;
 }
 
-.reader-modal.active{
+.toolbar-wrap{
+    position:sticky;
+    top:0;
+    z-index:40;
+    background:color-mix(in srgb, var(--bg) 86%, transparent);
+    -webkit-backdrop-filter:saturate(1.4) blur(14px);
+            backdrop-filter:saturate(1.4) blur(14px);
+    border-bottom:1px solid transparent;
+    transition:border-color .25s, box-shadow .25s;
+}
+
+.toolbar-wrap.is-stuck{
+    border-bottom-color:var(--line);
+    box-shadow:0 12px 30px -20px rgba(30,20,5,.45);
+}
+
+.toolbar{
+    padding:20px 0 14px;
+}
+
+.search{
+    position:relative;
     display:flex;
-    flex-direction:column;
-}
-
-.reader-header{
-    background:var(--primary);
-    color:white;
-    padding:15px;
-    display:flex;
-    justify-content:space-between;
     align-items:center;
 }
 
-.reader-header button{
-    border:none;
+.search > i{
+    position:absolute;
+    left:20px;
+    color:var(--muted);
+    pointer-events:none;
+}
+
+.search input{
+    width:100%;
+    height:54px;
+    padding:0 56px 0 52px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    color:var(--ink);
+    font-size:1rem;
+    box-shadow:0 1px 2px rgba(30,20,5,.04), 0 8px 24px -16px rgba(30,20,5,.25);
+    transition:border-color .2s, box-shadow .2s;
+    -webkit-appearance:none;
+            appearance:none;
+}
+
+.search input::placeholder{
+    color:var(--muted);
+}
+
+.search input:focus{
+    outline:none;
+    border-color:var(--brass-2);
+    box-shadow:0 0 0 4px color-mix(in srgb, var(--brass-2) 28%, transparent);
+}
+
+.search input::-webkit-search-cancel-button{
+    -webkit-appearance:none;
+    display:none;
+}
+
+.kbd{
+    position:absolute;
+    right:18px;
+    padding:3px 8px;
+    border:1px solid var(--line);
+    border-bottom-width:2px;
+    border-radius:7px;
+    font:600 .74rem/1.2 var(--sans);
+    color:var(--muted);
+    background:var(--bg);
+    pointer-events:none;
+}
+
+.search-clear{
+    position:absolute;
+    right:9px;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    color:var(--muted);
+    transition:background .2s, color .2s;
+}
+
+.search-clear:hover{
+    background:var(--bg-2);
+    color:var(--ink);
+}
+
+.chips{
+    position:relative;
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding:0 0 16px;
+    scrollbar-width:none;
+}
+
+.chips::-webkit-scrollbar{
+    display:none;
+}
+
+.chip{
+    flex:none;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    height:40px;
+    padding:0 16px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    color:var(--ink-2);
+    font-size:.9rem;
+    font-weight:500;
+    white-space:nowrap;
+    transition:background .2s, border-color .2s, color .2s;
+}
+
+.chip i{
+    font-size:.85em;
+    color:var(--brass);
+}
+
+.chip em{
+    font-style:normal;
+    font-size:.74rem;
+    font-weight:600;
+    color:var(--muted);
+    background:var(--bg-2);
+    border-radius:999px;
+    padding:1px 8px;
+}
+
+.chip:hover{
+    border-color:var(--brass-2);
+    color:var(--ink);
+}
+
+.chip-fav i{
+    color:var(--heart);
+}
+
+.chip[aria-pressed="true"]{
     background:var(--accent);
-    color:white;
-    padding:10px 15px;
-    border-radius:6px;
+    border-color:var(--accent);
+    color:var(--accent-ink);
+}
+
+.chip[aria-pressed="true"] i{
+    color:inherit;
+}
+
+.chip[aria-pressed="true"] em{
+    background:rgba(255,255,255,.18);
+    color:inherit;
+}
+
+/*
+=========================================
+ACERVO
+=========================================
+*/
+
+main{
+    padding:4px 0 80px;
+}
+
+.section-head{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:12px 20px;
+    margin:28px 0 22px;
+}
+
+.section-head h2{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:clamp(1.45rem, 2.4vw, 1.95rem);
+    line-height:1.15;
+    letter-spacing:-.01em;
+}
+
+.section-head p{
+    margin-top:4px;
+    color:var(--muted);
+    font-size:.9rem;
+}
+
+.link-btn{
+    color:var(--muted);
+    font-size:.85rem;
+    font-weight:500;
+    text-decoration:underline;
+    text-underline-offset:3px;
+}
+
+.link-btn:hover{
+    color:var(--ink);
+}
+
+.sort{
+    position:relative;
+    display:flex;
+    align-items:center;
+}
+
+.sort > i{
+    position:absolute;
+    color:var(--muted);
+    font-size:.85rem;
+    pointer-events:none;
+}
+
+.sort > i:first-of-type{
+    left:16px;
+}
+
+.sort > i.chev{
+    right:16px;
+    font-size:.7rem;
+}
+
+.sort select{
+    height:44px;
+    padding:0 40px 0 40px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    color:var(--ink);
+    font-size:.9rem;
+    cursor:pointer;
+    -webkit-appearance:none;
+            appearance:none;
+}
+
+.sort select:hover{
+    border-color:var(--brass-2);
+}
+
+/* continue lendo */
+.continue-row{
+    display:grid;
+    grid-auto-flow:column;
+    grid-auto-columns:minmax(250px, 290px);
+    gap:14px;
+    overflow-x:auto;
+    padding:4px 2px 14px;
+    scroll-snap-type:x mandatory;
+    scrollbar-width:thin;
+}
+
+.cont-item{
+    scroll-snap-align:start;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:12px 14px 12px 12px;
+    border-radius:16px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    text-align:left;
+    transition:border-color .2s, transform .2s;
+}
+
+.cont-item:hover{
+    border-color:var(--brass-2);
+    transform:translateY(-2px);
+}
+
+.mini{
+    position:relative;
+    flex:none;
+    width:50px;
+    aspect-ratio:7/10;
+    overflow:hidden;
+    border-radius:2px 4px 4px 2px;
+    background:var(--bg-2);
+    box-shadow:0 4px 10px -4px rgba(0,0,0,.45);
+    container-type:inline-size;
+}
+
+.cont-txt{
+    min-width:0;
+}
+
+.cont-txt strong{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:.95rem;
+    line-height:1.25;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
+.cont-txt span{
+    display:block;
+    margin-top:2px;
+    font-size:.8rem;
+    color:var(--muted);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.go{
+    flex:none;
+    margin-left:auto;
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    font-size:.8rem;
+    color:var(--ink-2);
+    background:var(--bg-2);
+}
+
+/* grade de livros */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(176px, 1fr));
+    gap:38px 26px;
+}
+
+.card{
+    position:relative;
+    display:flex;
+    flex-direction:column;
     cursor:pointer;
 }
 
-#pdf-viewer{
-    flex:1;
-    border:none;
-    background:white;
+.grid.animar .card{
+    animation:subir .5s cubic-bezier(.2,.8,.2,1) both;
 }
 
-footer{
-    margin-top:40px;
-    background:var(--dark);
-    color:white;
+@keyframes subir{
+    from{ opacity:0; transform:translateY(14px); }
+    to{ opacity:1; transform:none; }
+}
+
+.cover{
+    position:relative;
+    aspect-ratio:7/10;
+    overflow:hidden;
+    border-radius:3px 7px 7px 3px;
+    background:var(--bg-2);
+    box-shadow:var(--book-shadow);
+    transition:transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s;
+    container-type:inline-size;
+}
+
+.cover img,.book img,.mini img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    opacity:0;
+    transition:opacity .45s;
+}
+
+.cover img.ok,.book img.ok,.mini img.ok{
+    opacity:1;
+}
+
+/* lombada: dá a impressão de livro de verdade */
+.cover::before,.book::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+    background:
+        linear-gradient(90deg, rgba(0,0,0,.26) 0, rgba(255,255,255,.2) 2.2%, rgba(0,0,0,.1) 4.5%, transparent 9%),
+        linear-gradient(0deg, rgba(0,0,0,.08), transparent 30%);
+}
+
+.card:hover .cover{
+    transform:translateY(-6px);
+    box-shadow:var(--book-shadow-hover);
+}
+
+.cover-hover{
+    position:absolute;
+    inset:0;
+    z-index:2;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    padding:14px;
+    background:linear-gradient(to top, rgba(10,8,5,.75), transparent 55%);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s;
+}
+
+.cover-hover span{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:9px 16px;
+    border-radius:999px;
+    font-size:.85rem;
+    font-weight:600;
+    color:#1a1712;
+    background:var(--brass-2);
+    transform:translateY(8px);
+    transition:transform .25s;
+}
+
+.card:hover .cover-hover{
+    opacity:1;
+}
+
+.card:hover .cover-hover span{
+    transform:none;
+}
+
+.fav{
+    position:absolute;
+    top:8px;
+    right:8px;
+    z-index:3;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    color:#fff;
+    background:rgba(20,16,10,.45);
+    -webkit-backdrop-filter:blur(6px);
+            backdrop-filter:blur(6px);
+    opacity:0;
+    transform:scale(.9);
+    transition:opacity .2s, transform .2s, background .2s;
+}
+
+.card:hover .fav,.fav:focus-visible,.fav.on{
+    opacity:1;
+    transform:none;
+}
+
+.fav:hover{
+    background:rgba(20,16,10,.7);
+}
+
+.fav.on,.fav.on:hover{
+    color:#d1495b;
+    background:#fff;
+}
+
+@media (hover:none){
+    .fav{
+        opacity:1;
+        transform:none;
+    }
+}
+
+.card-body{
+    padding:14px 2px 0;
+}
+
+.tag{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-bottom:6px;
+    font-size:.68rem;
+    font-weight:600;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--brass);
+}
+
+.card-title{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:1.02rem;
+    line-height:1.25;
+    letter-spacing:-.005em;
+}
+
+.card-link{
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    padding:0;
+    text-align:left;
+    font:inherit;
+    color:inherit;
+    letter-spacing:inherit;
+}
+
+.card:has(.card-link:focus-visible) .cover{
+    outline:3px solid var(--brass-2);
+    outline-offset:3px;
+}
+
+.card-author{
+    margin-top:4px;
+    font-size:.85rem;
+    color:var(--muted);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+/* capa gerada automaticamente quando o livro não tem imagem */
+.cover-fallback{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    align-items:center;
+    padding:16% 11% 12%;
     text-align:center;
+    color:#f6ecd6;
+    background:linear-gradient(160deg, hsl(var(--h,150) 32% 30%), hsl(var(--h,150) 38% 16%));
+    box-shadow:inset 0 0 0 5cqw hsl(var(--h,150) 30% 22%), inset 0 0 0 calc(5cqw + 1px) rgba(226,192,126,.55);
+}
+
+.cover-fallback strong{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:10cqw;
+    line-height:1.15;
+    display:-webkit-box;
+    -webkit-line-clamp:5;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
+.cover-fallback small{
+    font-size:6.5cqw;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    opacity:.8;
+}
+
+/* nada encontrado */
+.empty{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    padding:64px 16px;
+    text-align:center;
+    color:var(--muted);
+}
+
+.empty i{
+    margin-bottom:8px;
+    font-size:2.2rem;
+    color:var(--brass);
+}
+
+.empty h3{
+    font-family:var(--serif);
+    font-size:1.4rem;
+    font-weight:600;
+    color:var(--ink);
+}
+
+.btn-outline{
+    margin-top:10px;
+    height:44px;
+    padding:0 20px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    color:var(--ink);
+    font-size:.9rem;
+    font-weight:600;
+    transition:border-color .2s;
+}
+
+.btn-outline:hover{
+    border-color:var(--brass-2);
+}
+
+.erro-dados{
+    grid-column:1 / -1;
     padding:20px;
+    border-radius:14px;
+    border:1px solid var(--heart);
+    color:var(--ink);
+    background:var(--surface);
+}
+
+/*
+=========================================
+RODAPÉ
+=========================================
+*/
+
+footer{
+    position:relative;
+    padding:52px 0 30px;
+    color:rgba(244,236,220,.75);
+    background:var(--brand);
+}
+
+footer::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:3px;
+    background:linear-gradient(90deg, transparent, var(--brass-2), transparent);
+    opacity:.6;
+}
+
+.foot{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    gap:32px;
+}
+
+.foot p{
+    max-width:30em;
+    margin-top:16px;
+    font-size:.92rem;
+}
+
+.foot h4{
+    margin-bottom:14px;
+    font-size:.74rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--brass-2);
+}
+
+.foot-links{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 20px;
+    max-width:420px;
+}
+
+.foot-links button{
+    font-size:.92rem;
+    color:rgba(244,236,220,.82);
+}
+
+.foot-links button:hover{
+    color:#fff;
+    text-decoration:underline;
+    text-underline-offset:3px;
+}
+
+.copy{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    gap:8px;
+    margin-top:36px;
+    padding-top:20px;
+    font-size:.82rem;
+    border-top:1px solid rgba(244,236,220,.12);
+}
+
+.copy i{
+    color:var(--brass-2);
+}
+
+/*
+=========================================
+LEITOR DE PDF
+=========================================
+*/
+
+.reader{
+    position:fixed;
+    inset:0;
+    z-index:100;
+    display:flex;
+    flex-direction:column;
+    background:#0f0e0c;
+    animation:aparecer .25s ease;
+}
+
+@keyframes aparecer{
+    from{ opacity:0; }
+    to{ opacity:1; }
+}
+
+.reader-bar{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:10px 16px;
+    color:#f1eadc;
+    background:#17150f;
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.r-icon{
+    flex:none;
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    display:grid;
+    place-items:center;
+    color:#e2c07e;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(226,192,126,.35);
+}
+
+.reader-meta{
+    flex:1;
+    min-width:0;
+}
+
+.reader-meta strong{
+    display:block;
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:1.05rem;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.reader-meta span{
+    display:block;
+    font-size:.8rem;
+    color:#a39681;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.reader-actions{
+    display:flex;
+    gap:8px;
+}
+
+.r-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    height:40px;
+    min-width:40px;
+    padding:0 14px;
+    border-radius:999px;
+    font-size:.88rem;
+    font-weight:500;
+    color:#f1eadc;
+    text-decoration:none;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.1);
+    transition:background .2s;
+}
+
+.r-btn:hover{
+    background:rgba(255,255,255,.14);
+}
+
+.r-btn.on i{
+    color:#f07182;
+}
+
+.r-close{
+    color:#1a1712;
+    background:#e2c07e;
+    border-color:transparent;
+}
+
+.r-close:hover{
+    background:#ecd194;
+}
+
+.reader-body{
+    position:relative;
+    flex:1;
+}
+
+.reader-body iframe{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+    background:transparent;
+}
+
+.reader-loading{
+    position:absolute;
+    inset:0;
+    display:grid;
+    place-content:center;
+    justify-items:center;
+    gap:14px;
+    color:#a39681;
+}
+
+.spinner{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    border:3px solid rgba(255,255,255,.12);
+    border-top-color:#e2c07e;
+    animation:girar 1s linear infinite;
+}
+
+@keyframes girar{
+    to{ transform:rotate(360deg); }
+}
+
+/*
+=========================================
+AVISOS E BOTÃO DE VOLTAR AO TOPO
+=========================================
+*/
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:24px;
+    z-index:120;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 20px;
+    border-radius:999px;
+    font-size:.9rem;
+    font-weight:500;
+    color:var(--bg);
+    background:var(--ink);
+    box-shadow:0 12px 30px -10px rgba(0,0,0,.45);
+    opacity:0;
+    pointer-events:none;
+    transform:translate(-50%, 20px);
+    transition:opacity .3s, transform .3s;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translate(-50%, 0);
+}
+
+.to-top{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    z-index:30;
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    color:var(--accent-ink);
+    background:var(--accent);
+    box-shadow:0 10px 24px -8px rgba(0,0,0,.4);
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(12px);
+    transition:opacity .25s, transform .25s;
+}
+
+.to-top.show{
+    opacity:1;
+    pointer-events:auto;
+    transform:none;
+}
+
+/*
+=========================================
+CELULAR E TABLET
+=========================================
+*/
+
+@media (max-width:960px){
+    .hero-grid{
+        grid-template-columns:1fr;
+        padding:8px 0 56px;
+    }
+
+    .hero-art{
+        display:none;
+    }
+
+    .chips{
+        -webkit-mask-image:linear-gradient(90deg, #000 85%, transparent);
+                mask-image:linear-gradient(90deg, #000 85%, transparent);
+    }
+}
+
+@media (max-width:640px){
+    .topbar{
+        padding:14px 0;
+    }
+
+    .brand-mark{
+        width:38px;
+        height:38px;
+        border-radius:11px;
+        font-size:16px;
+    }
+
+    .brand-name{
+        font-size:1.02rem;
+    }
+
+    .brand-name small{
+        display:none;
+    }
+
+    .top-btn{
+        padding:0 12px;
+    }
+
+    .top-btn .lbl{
+        display:none;
+    }
+
+    .hero h1{
+        margin:12px 0 14px;
+    }
+
+    .hero-cta .btn{
+        height:46px;
+        padding:0 18px;
+        font-size:.92rem;
+    }
+
+    .stats{
+        gap:24px;
+        margin-top:28px;
+        padding-top:18px;
+    }
+
+    .stat strong{
+        font-size:1.5rem;
+    }
+
+    .toolbar{
+        padding:12px 0 10px;
+    }
+
+    .search input{
+        height:48px;
+        font-size:16px;
+    }
+
+    .kbd{
+        display:none;
+    }
+
+    .chip{
+        height:36px;
+        padding:0 13px;
+        font-size:.85rem;
+    }
+
+    .chips{
+        padding-bottom:12px;
+    }
+
+    .section-head{
+        margin:22px 0 16px;
+    }
+
+    .grid{
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+        gap:28px 16px;
+    }
+
+    .card-title{
+        font-size:.95rem;
+    }
+
+    .cover-hover{
+        display:none;
+    }
+
+    .reader-bar{
+        gap:8px;
+        padding:8px 10px;
+    }
+
+    .r-icon{
+        display:none;
+    }
+
+    .r-btn{
+        padding:0 11px;
+    }
+
+    .r-btn span{
+        display:none;
+    }
+
+    .to-top{
+        right:14px;
+        bottom:14px;
+    }
+}
+
+@media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{
+        animation-duration:.01ms !important;
+        transition-duration:.01ms !important;
+        scroll-behavior:auto !important;
+    }
 }
 
 </style>
@@ -190,88 +1550,194 @@ footer{
 
 <body>
 
-<header>
-    <h1>
-        <i class="fas fa-book-open"></i>
-        Biblioteca Leitor Integral
-    </h1>
+<a class="skip" href="#resultados">Pular para o acervo</a>
+
+<header class="hero">
+    <div class="container">
+
+        <div class="topbar">
+            <a class="brand" href="./">
+                <span class="brand-mark"><i class="fa-solid fa-book-open"></i></span>
+                <span class="brand-name">Biblioteca Leitor Integral<small>Acervo digital</small></span>
+            </a>
+
+            <div class="top-actions">
+                <button class="top-btn" id="ver-favoritos" type="button">
+                    <i class="fa-solid fa-heart"></i>
+                    <span class="lbl">Favoritos</span>
+                    <span class="count" id="fav-contador" hidden>0</span>
+                </button>
+                <button class="top-btn icon" id="tema" type="button" aria-label="Mudar o tema">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="hero-grid">
+            <div class="hero-text">
+                <span class="eyebrow">Acervo digital gratuito</span>
+
+                <h1>Uma biblioteca inteira, <em>aberta a qualquer hora.</em></h1>
+
+                <p class="hero-lead">
+                    Clássicos da literatura, livros didáticos, HQs e muito mais
+                    para ler de graça, direto no navegador.
+                </p>
+
+                <div class="hero-cta">
+                    <a class="btn btn-brass" href="#acervo">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Explorar o acervo
+                    </a>
+                    <button class="btn btn-ghost" id="hero-continuar" type="button" hidden>
+                        <i class="fa-solid fa-bookmark"></i>
+                        Continuar lendo
+                    </button>
+                </div>
+
+                <div class="stats">
+                    <div class="stat"><strong id="stat-obras">0</strong><span>obras no acervo</span></div>
+                    <div class="stat"><strong id="stat-categorias">0</strong><span>categorias</span></div>
+                    <div class="stat"><strong>100%</strong><span>gratuito</span></div>
+                </div>
+            </div>
+
+            <div class="hero-art">
+                <div class="stack" id="vitrine"></div>
+                <div class="shelf"></div>
+            </div>
+        </div>
+
+    </div>
 </header>
 
-<section class="hero">
+<div class="sentinela" id="acervo"></div>
 
-    <h2>Leia livros online gratuitamente</h2>
+<div class="toolbar-wrap" id="barra">
+    <div class="container">
 
-    <p>
-        Explore nosso acervo digital.
-    </p>
+        <div class="toolbar">
+            <div class="search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input
+                    type="search"
+                    id="busca"
+                    placeholder="Buscar por título, autor ou categoria..."
+                    autocomplete="off"
+                    spellcheck="false"
+                    aria-label="Buscar no acervo">
+                <kbd class="kbd" id="atalho" title="Atalho: aperte / para buscar">/</kbd>
+                <button class="search-clear" id="limpar-busca" type="button" aria-label="Limpar busca" hidden>
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
 
-    <div class="search-box">
-        <input
-            type="text"
-            id="search-input"
-            placeholder="Buscar livro ou autor..."
-            onkeyup="searchBooks()">
-    </div>
-
-</section>
-
-<section class="categories">
-
-    <button onclick="filtrar('todos')">
-        Todos
-    </button>
-
-    <button onclick="filtrar('aluisio')">
-        Aluísio Azevedo
-    </button>
-
-    <button onclick="filtrar('didaticos')">
-        Didáticos
-    </button>
-
-    <button onclick="filtrar('uema')">
-        UEMA
-    </button>
-
-    <button onclick="filtrar('hqs')">
-        HQs
-    </button>
-
-    <button onclick="filtrar('maranhenses')">
-        Maranhenses
-    </button>
-
-    <button onclick="filtrar('religioso')">
-        Religioso
-    </button>
-
-</section>
-
-<section class="catalogo" id="catalogo"></section>
-
-<div class="reader-modal" id="reader-modal">
-
-    <div class="reader-header">
-
-        <h3 id="reader-title">
-            Livro
-        </h3>
-
-        <button onclick="closeReader()">
-            Fechar
-        </button>
+        <nav class="chips" id="categorias" aria-label="Categorias"></nav>
 
     </div>
+</div>
 
-    <iframe id="pdf-viewer"></iframe>
+<main class="container">
+
+    <section id="continuar" hidden>
+        <div class="section-head">
+            <div>
+                <h2>Continue lendo</h2>
+                <p>Os últimos livros que você abriu neste aparelho</p>
+            </div>
+            <button class="link-btn" id="limpar-historico" type="button">Limpar histórico</button>
+        </div>
+        <div class="continue-row" id="continuar-lista"></div>
+    </section>
+
+    <section id="resultados">
+        <div class="section-head">
+            <div>
+                <h2 id="resultados-titulo">Todo o acervo</h2>
+                <p id="resultados-contagem" aria-live="polite"></p>
+            </div>
+            <label class="sort">
+                <span class="sr-only">Ordenar por</span>
+                <i class="fa-solid fa-arrow-down-wide-short"></i>
+                <select id="ordem">
+                    <option value="padrao">Ordem do acervo</option>
+                    <option value="titulo">Título (A–Z)</option>
+                    <option value="autor">Autor (A–Z)</option>
+                </select>
+                <i class="fa-solid fa-chevron-down chev"></i>
+            </label>
+        </div>
+
+        <div class="grid animar" id="grade"></div>
+
+        <div class="empty" id="vazio" hidden></div>
+    </section>
+
+</main>
+
+<footer>
+    <div class="container">
+        <div class="foot">
+            <div>
+                <a class="brand" href="./">
+                    <span class="brand-mark"><i class="fa-solid fa-book-open"></i></span>
+                    <span class="brand-name">Biblioteca Leitor Integral<small>Acervo digital</small></span>
+                </a>
+                <p>
+                    Um acervo digital gratuito com clássicos da literatura,
+                    livros didáticos e HQs, sempre à mão.
+                </p>
+            </div>
+            <div>
+                <h4>Categorias</h4>
+                <div class="foot-links" id="rodape-categorias"></div>
+            </div>
+        </div>
+        <div class="copy">
+            <span>Biblioteca Leitor Integral © <span id="ano">2026</span></span>
+            <span><i class="fa-solid fa-book-open"></i> Boas leituras!</span>
+        </div>
+    </div>
+</footer>
+
+<div class="reader" id="leitor" role="dialog" aria-modal="true" aria-labelledby="leitor-titulo" hidden>
+
+    <div class="reader-bar">
+        <span class="r-icon"><i class="fa-solid fa-book-open"></i></span>
+        <div class="reader-meta">
+            <strong id="leitor-titulo">Livro</strong>
+            <span id="leitor-autor"></span>
+        </div>
+        <div class="reader-actions">
+            <button class="r-btn" id="leitor-fav" type="button"></button>
+            <a class="r-btn" id="leitor-aba" href="#" target="_blank" rel="noopener" title="Abrir em nova aba">
+                <i class="fa-solid fa-up-right-from-square"></i><span>Nova aba</span>
+            </a>
+            <a class="r-btn" id="leitor-baixar" href="#" download title="Baixar PDF">
+                <i class="fa-solid fa-download"></i><span>Baixar</span>
+            </a>
+            <button class="r-btn r-close" id="leitor-fechar" type="button" title="Fechar (Esc)">
+                <i class="fa-solid fa-xmark"></i><span>Fechar</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="reader-body">
+        <div class="reader-loading" id="leitor-carregando">
+            <div class="spinner"></div>
+            <p>Abrindo o livro...</p>
+        </div>
+        <iframe id="leitor-pdf" title="Leitor de PDF"></iframe>
+    </div>
 
 </div>
 
-<footer>
+<div class="toast" id="aviso" role="status" aria-live="polite"></div>
 
-    Biblioteca Leitor Integral © 2026
-
-</footer>
+<button class="to-top" id="topo" type="button" aria-label="Voltar ao topo">
+    <i class="fa-solid fa-arrow-up"></i>
+</button>
 
 <script>
 
@@ -279,6 +1745,19 @@ footer{
 =========================================
 ADICIONE SEUS LIVROS AQUI
 =========================================
+Copie um bloco { ... }, cole no fim da lista e troque os dados.
+Não esqueça a vírgula entre um livro e outro.
+
+{
+    titulo:"Nome do livro",
+    autor:"Nome do autor",
+    categoria:"hqs",
+    capa:"capas/nome-da-capa.png",
+    pdf:"pdfs/nome-do-arquivo.pdf"
+},
+
+Categorias: aluisio, didaticos, uema, hqs, maranhenses, religioso
+(para criar uma categoria nova, veja CATEGORIAS logo depois da lista)
 */
 
 const livros = [
@@ -435,127 +1914,628 @@ const livros = [
     pdf:"pdfs/os-herois-mais-poderosos-vingadores-30-busiek-e-perez-160-182.pdf"
 }
 
-
-
 ];
 
 /*
 =========================================
-SISTEMA
+CATEGORIAS
+=========================================
+chave: { nome que aparece no site, ícone }
+A ordem aqui é a ordem dos botões no site.
+Ícones: https://fontawesome.com/search?ic=free
+*/
+
+const categorias = {
+    aluisio:     { nome:"Aluísio Azevedo", icone:"fa-feather-pointed" },
+    didaticos:   { nome:"Didáticos",       icone:"fa-graduation-cap" },
+    uema:        { nome:"UEMA",            icone:"fa-building-columns" },
+    hqs:         { nome:"HQs",             icone:"fa-bolt" },
+    maranhenses: { nome:"Maranhenses",     icone:"fa-location-dot" },
+    religioso:   { nome:"Religioso",       icone:"fa-book-bible" }
+};
+
+</script>
+
+<script>
+
+/*
+=========================================
+SISTEMA (não precisa mexer daqui para baixo)
 =========================================
 */
 
-let livrosFiltrados = livros;
+(function(){
+"use strict";
 
-function renderizarLivros(lista){
+/* ---------- utilidades ---------- */
 
-    const catalogo =
-        document.getElementById("catalogo");
+const $ = (seletor) => document.querySelector(seletor);
 
-    catalogo.innerHTML = "";
+function el(tag, classe, texto){
+    const e = document.createElement(tag);
+    if (classe) e.className = classe;
+    if (texto != null) e.textContent = texto;
+    return e;
+}
 
-    lista.forEach(livro=>{
+const normalizar = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
 
-        catalogo.innerHTML += `
+function ler(chave, padrao){
+    try {
+        const v = localStorage.getItem(chave);
+        return v ? JSON.parse(v) : padrao;
+    } catch (e) {
+        return padrao;
+    }
+}
 
-        <div class="book-card">
+function gravar(chave, valor){
+    try { localStorage.setItem(chave, JSON.stringify(valor)); } catch (e) {}
+}
 
-            <div class="book-cover">
+function embaralhar(lista){
+    return lista.map(v => [Math.random(), v]).sort((a, b) => a[0] - b[0]).map(p => p[1]);
+}
 
-                <img src="${livro.capa}">
+/* ---------- dados ---------- */
 
-            </div>
+const grade = $("#grade");
 
-            <div class="book-info">
+if (typeof livros === "undefined" || !Array.isArray(livros)) {
+    grade.innerHTML = '<p class="erro-dados"><i class="fa-solid fa-circle-exclamation"></i> Não foi possível carregar a lista de livros. Confira se não faltou vírgula, aspas ou chave na parte “ADICIONE SEUS LIVROS AQUI”.</p>';
+    return;
+}
 
-                <h3>${livro.titulo}</h3>
+const CATS = (typeof categorias === "object" && categorias) || {};
+const nomeCategoria = (k) => (CATS[k] && CATS[k].nome) || (k ? k.charAt(0).toUpperCase() + k.slice(1) : "Outros");
+const iconeCategoria = (k) => (CATS[k] && CATS[k].icone) || "fa-bookmark";
 
-                <p>${livro.autor}</p>
+livros.forEach((l, i) => {
+    l.categoria = l.categoria || "outros";
+    l.id = l.pdf || "livro-" + i;
+    l.ordem = i;
+    l.indice = normalizar([l.titulo, l.autor, nomeCategoria(l.categoria)].join(" "));
+});
 
-                <button
-                    onclick="openBook('${livro.pdf}','${livro.titulo}')">
+const porId = new Map(livros.map(l => [l.id, l]));
 
-                    Ler Livro
+let favoritos = new Set(ler("blc:favoritos", []).filter(id => porId.has(id)));
+let historico = ler("blc:historico", []).filter(id => porId.has(id));
 
-                </button>
+const estado = { categoria:"todos", busca:"", ordem:"padrao" };
 
-            </div>
+/* no celular o PDF abre no leitor do próprio aparelho (funciona melhor) */
+const ehCelular = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
+    || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
-        </div>
+const cartoes = new Map();
+let livroAberto = null;
+let focoAntes = null;
+let chaveContinuar = "";
+let tempoAviso = null;
 
-        `;
+/* ---------- elementos ---------- */
+
+const busca = $("#busca");
+const limparBusca = $("#limpar-busca");
+const atalho = $("#atalho");
+const chips = $("#categorias");
+const barra = $("#barra");
+const titulo = $("#resultados-titulo");
+const contagem = $("#resultados-contagem");
+const ordem = $("#ordem");
+const vazio = $("#vazio");
+const contSecao = $("#continuar");
+const contLista = $("#continuar-lista");
+const heroContinuar = $("#hero-continuar");
+const favContador = $("#fav-contador");
+const temaBtn = $("#tema");
+const aviso = $("#aviso");
+const topo = $("#topo");
+
+const leitor = $("#leitor");
+const lTitulo = $("#leitor-titulo");
+const lAutor = $("#leitor-autor");
+const lPdf = $("#leitor-pdf");
+const lCarregando = $("#leitor-carregando");
+const lFav = $("#leitor-fav");
+const lAba = $("#leitor-aba");
+const lBaixar = $("#leitor-baixar");
+const lFechar = $("#leitor-fechar");
+
+/* ---------- capas ---------- */
+
+function corDoTitulo(texto){
+    let h = 0;
+    for (const c of String(texto)) h = (h * 31 + c.charCodeAt(0)) % 360;
+    return h;
+}
+
+function capaGerada(livro){
+    const d = el("div", "cover-fallback");
+    d.style.setProperty("--h", corDoTitulo(livro.titulo));
+    d.append(el("strong", "", livro.titulo), el("small", "", livro.autor || ""));
+    return d;
+}
+
+function montarCapa(alvo, livro, imediata){
+    if (!livro.capa) {
+        alvo.append(capaGerada(livro));
+        return;
+    }
+    const img = new Image();
+    img.alt = "Capa de " + livro.titulo;
+    img.decoding = "async";
+    if (!imediata) img.loading = "lazy";
+    img.onload = () => img.classList.add("ok");
+    img.onerror = () => img.replaceWith(capaGerada(livro));
+    img.src = livro.capa;
+    alvo.append(img);
+}
+
+/* ---------- favoritos ---------- */
+
+function pintarFav(botao, livro){
+    const on = favoritos.has(livro.id);
+    botao.classList.toggle("on", on);
+    botao.innerHTML = '<i class="fa-' + (on ? "solid" : "regular") + ' fa-heart"></i>';
+    botao.setAttribute("aria-pressed", String(on));
+    botao.setAttribute("aria-label", (on ? "Remover dos favoritos: " : "Favoritar: ") + livro.titulo);
+    botao.title = on ? "Remover dos favoritos" : "Favoritar";
+}
+
+function pintarFavLeitor(){
+    if (!livroAberto) return;
+    const on = favoritos.has(livroAberto.id);
+    lFav.classList.toggle("on", on);
+    lFav.innerHTML = '<i class="fa-' + (on ? "solid" : "regular") + ' fa-heart"></i><span>' + (on ? "Favorito" : "Favoritar") + "</span>";
+    lFav.setAttribute("aria-pressed", String(on));
+}
+
+function atualizarContadores(){
+    favContador.textContent = favoritos.size;
+    favContador.hidden = favoritos.size === 0;
+    const chipFav = chips.querySelector('[data-cat="favoritos"] em');
+    if (chipFav) chipFav.textContent = favoritos.size;
+}
+
+function alternarFavorito(livro){
+    const on = !favoritos.has(livro.id);
+    if (on) favoritos.add(livro.id); else favoritos.delete(livro.id);
+    gravar("blc:favoritos", Array.from(favoritos));
+
+    const card = cartoes.get(livro.id);
+    if (card) pintarFav(card.querySelector(".fav"), livro);
+    pintarFavLeitor();
+    atualizarContadores();
+    mostrarAviso(on ? "Adicionado aos favoritos" : "Removido dos favoritos", on ? "fa-heart" : "fa-heart-crack");
+
+    if (estado.categoria === "favoritos") renderizar(false);
+}
+
+/* ---------- cartões dos livros ---------- */
+
+function cartao(livro){
+    if (cartoes.has(livro.id)) return cartoes.get(livro.id);
+
+    const card = el("article", "card");
+
+    const capa = el("div", "cover");
+    montarCapa(capa, livro, livro.ordem < 8);
+
+    const hover = el("div", "cover-hover");
+    hover.innerHTML = '<span><i class="fa-solid fa-book-open"></i> Ler agora</span>';
+
+    const fav = el("button", "fav");
+    fav.type = "button";
+    pintarFav(fav, livro);
+    fav.addEventListener("click", (e) => {
+        e.stopPropagation();
+        alternarFavorito(livro);
+    });
+
+    capa.append(hover, fav);
+
+    const corpo = el("div", "card-body");
+
+    const tag = el("span", "tag");
+    tag.innerHTML = '<i class="fa-solid ' + iconeCategoria(livro.categoria) + '"></i>';
+    tag.append(nomeCategoria(livro.categoria));
+
+    const h3 = el("h3", "card-title");
+    const link = el("button", "card-link", livro.titulo);
+    link.type = "button";
+    h3.append(link);
+
+    corpo.append(tag, h3, el("p", "card-author", livro.autor || ""));
+    card.append(capa, corpo);
+
+    card.addEventListener("click", (e) => {
+        if (e.target.closest(".fav")) return;
+        abrirLivro(livro);
+    });
+
+    cartoes.set(livro.id, card);
+    return card;
+}
+
+/* ---------- filtro, busca e ordem ---------- */
+
+function listaAtual(){
+    let lista = livros;
+
+    if (estado.categoria === "favoritos") lista = lista.filter(l => favoritos.has(l.id));
+    else if (estado.categoria !== "todos") lista = lista.filter(l => l.categoria === estado.categoria);
+
+    const termos = normalizar(estado.busca).split(/\s+/).filter(Boolean);
+    if (termos.length) lista = lista.filter(l => termos.every(t => l.indice.includes(t)));
+
+    const comparar = (a, b) => String(a).localeCompare(String(b), "pt-BR", { sensitivity:"base", numeric:true });
+    if (estado.ordem === "titulo") lista = lista.slice().sort((a, b) => comparar(a.titulo, b.titulo));
+    else if (estado.ordem === "autor") lista = lista.slice().sort((a, b) => comparar(a.autor || "", b.autor || "") || comparar(a.titulo, b.titulo));
+
+    return lista;
+}
+
+function renderizar(animar){
+    const lista = listaAtual();
+
+    grade.classList.toggle("animar", !!animar);
+    grade.textContent = "";
+    lista.forEach((l, i) => {
+        const c = cartao(l);
+        c.style.animationDelay = Math.min(i, 14) * 30 + "ms";
+        grade.append(c);
+    });
+
+    const termo = estado.busca.trim();
+    const nomeFiltro =
+        estado.categoria === "todos" ? "" :
+        estado.categoria === "favoritos" ? "Favoritos" :
+        nomeCategoria(estado.categoria);
+
+    if (termo) titulo.textContent = "Resultados para “" + termo + "”";
+    else if (estado.categoria === "todos") titulo.textContent = "Todo o acervo";
+    else if (estado.categoria === "favoritos") titulo.textContent = "Seus favoritos";
+    else titulo.textContent = nomeFiltro;
+
+    contagem.textContent = (lista.length === 1 ? "1 obra" : lista.length + " obras") + (termo && nomeFiltro ? " em " + nomeFiltro : "");
+
+    grade.hidden = lista.length === 0;
+    vazio.hidden = lista.length > 0;
+    if (!lista.length) montarVazio(termo);
+
+    chips.querySelectorAll(".chip").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.cat === estado.categoria)));
+
+    renderContinuar();
+}
+
+function montarVazio(termo){
+    vazio.textContent = "";
+    const semFavoritos = estado.categoria === "favoritos" && !termo;
+
+    const icone = el("i", "fa-solid " + (semFavoritos ? "fa-heart" : "fa-book-open-reader"));
+    const h = el("h3", "", semFavoritos ? "Nenhum favorito ainda" : "Nenhuma obra encontrada");
+    const p = el("p", "",
+        semFavoritos ? "Toque no coração de um livro para guardá-lo aqui." :
+        termo ? "Não encontramos nada para “" + termo + "”. Tente outro título, autor ou categoria." :
+        "Ainda não há obras nesta categoria.");
+
+    const b = el("button", "btn-outline", semFavoritos ? "Explorar o acervo" : "Limpar busca e filtros");
+    b.type = "button";
+    b.addEventListener("click", () => {
+        definirBusca("");
+        escolherCategoria("todos", false);
+    });
+
+    vazio.append(icone, h, p, b);
+}
+
+function definirBusca(valor){
+    busca.value = valor;
+    sincronizarBusca();
+}
+
+function sincronizarBusca(){
+    estado.busca = busca.value;
+    limparBusca.hidden = !busca.value;
+    atalho.hidden = !!busca.value;
+}
+
+function escolherCategoria(k, rolar){
+    estado.categoria = k;
+    renderizar(true);
+
+    const chip = chips.querySelector('[data-cat="' + k + '"]');
+    if (chip && chips.scrollWidth > chips.clientWidth) {
+        chips.scrollTo({ left: chip.offsetLeft - (chips.clientWidth - chip.offsetWidth) / 2, behavior:"smooth" });
+    }
+    if (rolar) rolarParaResultados();
+}
+
+function rolarParaResultados(){
+    const alvo = $("#resultados");
+    const y = alvo.getBoundingClientRect().top + window.scrollY - barra.offsetHeight - 8;
+    if (window.scrollY > y + 2) window.scrollTo({ top:y, behavior:"smooth" });
+}
+
+/* ---------- continue lendo ---------- */
+
+function renderContinuar(){
+    const itens = historico.map(id => porId.get(id)).filter(Boolean).slice(0, 8);
+    heroContinuar.hidden = itens.length === 0;
+
+    const mostrar = itens.length > 0 && estado.categoria === "todos" && !estado.busca.trim();
+    contSecao.hidden = !mostrar;
+    if (!mostrar) return;
+
+    const chave = itens.map(l => l.id).join("|");
+    if (chave === chaveContinuar) return;
+    chaveContinuar = chave;
+
+    contLista.textContent = "";
+    itens.forEach(l => {
+        const b = el("button", "cont-item");
+        b.type = "button";
+
+        const mini = el("div", "mini");
+        montarCapa(mini, l, true);
+
+        const txt = el("div", "cont-txt");
+        txt.append(el("strong", "", l.titulo), el("span", "", l.autor || ""));
+
+        const ir = el("span", "go");
+        ir.innerHTML = '<i class="fa-solid fa-arrow-right"></i>';
+
+        b.append(mini, txt, ir);
+        b.addEventListener("click", () => abrirLivro(l));
+        contLista.append(b);
     });
 }
 
-function openBook(pdf,titulo){
-
-    document
-        .getElementById("reader-title")
-        .textContent = titulo;
-
-    document
-        .getElementById("pdf-viewer")
-        .src = pdf;
-
-    document
-        .getElementById("reader-modal")
-        .classList.add("active");
+function registrarLeitura(livro){
+    historico = [livro.id].concat(historico.filter(id => id !== livro.id)).slice(0, 12);
+    gravar("blc:historico", historico);
+    renderContinuar();
 }
 
-function closeReader(){
+/* ---------- leitor ---------- */
 
-    document
-        .getElementById("reader-modal")
-        .classList.remove("active");
+function abrirLivro(livro){
+    registrarLeitura(livro);
 
-    document
-        .getElementById("pdf-viewer")
-        .src = "";
-}
-
-function searchBooks(){
-
-    const termo =
-        document
-        .getElementById("search-input")
-        .value
-        .toLowerCase();
-
-    const resultado =
-        livrosFiltrados.filter(livro =>
-
-            livro.titulo
-                .toLowerCase()
-                .includes(termo)
-
-            ||
-
-            livro.autor
-                .toLowerCase()
-                .includes(termo)
-        );
-
-    renderizarLivros(resultado);
-}
-
-function filtrar(categoria){
-
-    if(categoria === "todos"){
-
-        livrosFiltrados = livros;
-
-    }else{
-
-        livrosFiltrados =
-            livros.filter(
-                livro => livro.categoria === categoria
-            );
+    if (ehCelular) {
+        window.open(livro.pdf, "_blank", "noopener");
+        return;
     }
 
-    renderizarLivros(livrosFiltrados);
+    focoAntes = document.activeElement;
+    livroAberto = livro;
+    lTitulo.textContent = livro.titulo;
+    lAutor.textContent = livro.autor || "";
+    lAba.href = livro.pdf;
+    lBaixar.href = livro.pdf;
+    pintarFavLeitor();
+
+    lCarregando.hidden = false;
+    lPdf.src = livro.pdf;
+    leitor.hidden = false;
+    document.body.classList.add("lendo");
+    history.pushState({ leitor:true }, "");
+    lFechar.focus();
 }
 
-renderizarLivros(livros);
+function esconderLeitor(){
+    leitor.hidden = true;
+    lPdf.src = "about:blank";
+    document.body.classList.remove("lendo");
+    livroAberto = null;
+    if (focoAntes && document.contains(focoAntes)) focoAntes.focus({ preventScroll:true });
+}
+
+function fecharLeitor(){
+    if (leitor.hidden) return;
+    if (history.state && history.state.leitor) history.back();
+    else esconderLeitor();
+}
+
+/* ---------- avisos ---------- */
+
+function mostrarAviso(mensagem, icone){
+    aviso.innerHTML = '<i class="fa-solid ' + icone + '"></i>';
+    aviso.append(mensagem);
+    aviso.classList.add("show");
+    clearTimeout(tempoAviso);
+    tempoAviso = setTimeout(() => aviso.classList.remove("show"), 2200);
+}
+
+/* ---------- tema claro / escuro ---------- */
+
+function temaAtual(){
+    const t = document.documentElement.getAttribute("data-theme");
+    if (t) return t;
+    return window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function pintarTema(){
+    const escuro = temaAtual() === "dark";
+    temaBtn.innerHTML = '<i class="fa-solid fa-' + (escuro ? "sun" : "moon") + '"></i>';
+    temaBtn.setAttribute("aria-label", escuro ? "Mudar para o tema claro" : "Mudar para o tema escuro");
+    temaBtn.title = escuro ? "Tema claro" : "Tema escuro";
+}
+
+/* ---------- montagem da página ---------- */
+
+function montarChips(){
+    const cont = {};
+    livros.forEach(l => { cont[l.categoria] = (cont[l.categoria] || 0) + 1; });
+
+    const chaves = Object.keys(CATS).filter(k => cont[k])
+        .concat(Object.keys(cont).filter(k => !CATS[k]));
+
+    const itens = [{ k:"todos", nome:"Todos", icone:"fa-layer-group", n:livros.length }]
+        .concat(chaves.map(k => ({ k:k, nome:nomeCategoria(k), icone:iconeCategoria(k), n:cont[k] })))
+        .concat([{ k:"favoritos", nome:"Favoritos", icone:"fa-heart", n:favoritos.size }]);
+
+    itens.forEach(it => {
+        const b = el("button", "chip" + (it.k === "favoritos" ? " chip-fav" : ""));
+        b.type = "button";
+        b.dataset.cat = it.k;
+        b.innerHTML = '<i class="fa-solid ' + it.icone + '"></i>';
+        b.append(el("span", "", it.nome), el("em", "", String(it.n)));
+        b.addEventListener("click", () => escolherCategoria(it.k, true));
+        chips.append(b);
+    });
+
+    return chaves;
+}
+
+function montarRodape(chaves){
+    const caixa = $("#rodape-categorias");
+    chaves.forEach(k => {
+        const b = el("button", "", nomeCategoria(k));
+        b.type = "button";
+        b.addEventListener("click", () => escolherCategoria(k, true));
+        caixa.append(b);
+    });
+    $("#ano").textContent = new Date().getFullYear();
+}
+
+function montarVitrine(){
+    const vitrine = $("#vitrine");
+    const comCapa = livros.filter(l => l.capa);
+
+    const umPorCategoria = new Map();
+    embaralhar(comCapa).forEach(l => {
+        if (!umPorCategoria.has(l.categoria)) umPorCategoria.set(l.categoria, l);
+    });
+
+    let escolhidos = embaralhar(Array.from(umPorCategoria.values())).slice(0, 3);
+    if (escolhidos.length < 3) {
+        escolhidos = escolhidos.concat(embaralhar(comCapa.filter(l => escolhidos.indexOf(l) < 0)).slice(0, 3 - escolhidos.length));
+    }
+
+    escolhidos.forEach(l => {
+        const b = el("button", "book");
+        b.type = "button";
+        b.title = l.titulo;
+        b.setAttribute("aria-label", "Ler " + l.titulo);
+        montarCapa(b, l, true);
+        b.addEventListener("click", () => abrirLivro(l));
+        vitrine.append(b);
+    });
+}
+
+/* ---------- eventos ---------- */
+
+busca.addEventListener("input", () => {
+    sincronizarBusca();
+    renderizar(false);
+    rolarParaResultados();
+});
+
+busca.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && busca.value) {
+        e.preventDefault();
+        definirBusca("");
+        renderizar(false);
+    }
+});
+
+limparBusca.addEventListener("click", () => {
+    definirBusca("");
+    renderizar(false);
+    busca.focus();
+});
+
+ordem.addEventListener("change", () => {
+    estado.ordem = ordem.value;
+    renderizar(true);
+});
+
+$("#ver-favoritos").addEventListener("click", () => {
+    escolherCategoria("favoritos", false);
+    $("#acervo").scrollIntoView({ behavior:"smooth" });
+});
+
+heroContinuar.addEventListener("click", () => {
+    const l = porId.get(historico[0]);
+    if (l) abrirLivro(l);
+});
+
+$("#limpar-historico").addEventListener("click", () => {
+    historico = [];
+    chaveContinuar = "";
+    gravar("blc:historico", historico);
+    renderContinuar();
+    mostrarAviso("Histórico de leitura limpo", "fa-broom");
+});
+
+temaBtn.addEventListener("click", () => {
+    const novo = temaAtual() === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", novo);
+    gravar("blc:tema", novo);
+    pintarTema();
+});
+
+if (window.matchMedia) {
+    const mq = matchMedia("(prefers-color-scheme: dark)");
+    if (mq.addEventListener) mq.addEventListener("change", pintarTema);
+
+    /* texto da busca mais curto em telas pequenas */
+    const telaPequena = matchMedia("(max-width: 640px)");
+    const ajustarBusca = () => {
+        busca.placeholder = telaPequena.matches ? "Buscar título ou autor..." : "Buscar por título, autor ou categoria...";
+    };
+    ajustarBusca();
+    if (telaPequena.addEventListener) telaPequena.addEventListener("change", ajustarBusca);
+}
+
+lFechar.addEventListener("click", fecharLeitor);
+lFav.addEventListener("click", () => { if (livroAberto) alternarFavorito(livroAberto); });
+lPdf.addEventListener("load", () => { lCarregando.hidden = true; });
+
+window.addEventListener("popstate", () => {
+    if (!leitor.hidden) esconderLeitor();
+});
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !leitor.hidden) {
+        fecharLeitor();
+        return;
+    }
+    const ativo = document.activeElement;
+    const digitando = ativo && /^(INPUT|TEXTAREA|SELECT)$/.test(ativo.tagName);
+    if (e.key === "/" && leitor.hidden && !digitando) {
+        e.preventDefault();
+        busca.focus();
+    }
+});
+
+window.addEventListener("scroll", () => {
+    topo.classList.toggle("show", window.scrollY > 900);
+}, { passive:true });
+
+topo.addEventListener("click", () => window.scrollTo({ top:0, behavior:"smooth" }));
+
+if ("IntersectionObserver" in window) {
+    new IntersectionObserver(([e]) => {
+        barra.classList.toggle("is-stuck", !e.isIntersecting && e.boundingClientRect.top < 0);
+    }).observe($("#acervo"));
+}
+
+/* ---------- início ---------- */
+
+const chaves = montarChips();
+montarRodape(chaves);
+$("#stat-obras").textContent = livros.length;
+$("#stat-categorias").textContent = chaves.length;
+montarVitrine();
+atualizarContadores();
+pintarTema();
+renderizar(true);
+
+})();
 
 </script>
 
