@@ -1758,6 +1758,8 @@ Não esqueça a vírgula entre um livro e outro.
 
 Categorias: aluisio, classicos, poesia, didaticos, uema, hqs, maranhenses, religioso
 (para criar uma categoria nova, veja CATEGORIAS logo depois da lista)
+
+Opcional: vitrine:false  -> o livro não aparece na estante do topo da página
 */
 
 const livros = [
@@ -2232,6 +2234,15 @@ const livros = [
     categoria:"hqs",
     capa:"capas/o-tico-tico-827-1921.jpg",
     pdf:"pdfs/o-tico-tico-827-1921.pdf"
+},
+
+{
+    titulo:"Daredevil Comics #1 (1941, em inglês)",
+    autor:"Lev Gleason Publications",
+    categoria:"hqs",
+    capa:"capas/daredevil-comics-01-1941.jpg",
+    pdf:"pdfs/daredevil-comics-01-1941.pdf",
+    vitrine:false
 },
 
 ];
@@ -2725,7 +2736,7 @@ function montarRodape(chaves){
 
 function montarVitrine(){
     const vitrine = $("#vitrine");
-    const comCapa = livros.filter(l => l.capa);
+    const comCapa = livros.filter(l => l.capa && l.vitrine !== false);
 
     const umPorCategoria = new Map();
     embaralhar(comCapa).forEach(l => {
